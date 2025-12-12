@@ -9,6 +9,7 @@ import {
     Animated,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import MainApp from "./MainApp";
 
 const { width, height } = Dimensions.get("window");
 
@@ -47,9 +48,15 @@ const slides = [
 ];
 
 export default function App() {
+    const [showOnboarding, setShowOnboarding] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
     const scrollX = useRef(new Animated.Value(0)).current;
     const scrollViewRef = useRef(null);
+
+    // If onboarding is complete, show main app
+    if (!showOnboarding) {
+        return <MainApp />;
+    }
 
     const handleScroll = Animated.event(
         [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -66,13 +73,13 @@ export default function App() {
             setCurrentIndex(nextIndex);
         } else {
             // Navigate to main app
-            console.log("Get Started!");
+            setShowOnboarding(false);
         }
     };
 
     const handleSkip = () => {
         // Navigate to main app
-        console.log("Skip to main app");
+        setShowOnboarding(false);
     };
 
     return (
